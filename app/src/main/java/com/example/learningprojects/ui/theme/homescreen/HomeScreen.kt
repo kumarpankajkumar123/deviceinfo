@@ -52,11 +52,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learningprojects.R
+import com.example.learningprojects.ui.theme.PureWhite
+import com.example.learningprojects.ui.theme.bannerColor1
+import com.example.learningprojects.ui.theme.bannerColor2
 import com.example.learningprojects.ui.theme.canvascomposable.CircularHealthMeter
 import com.example.learningprojects.ui.theme.commonusablecomponent.CommonText
 import com.example.learningprojects.ui.theme.commonusablecomponent.ReusableAnalyticsGraph
 import com.example.learningprojects.ui.theme.enumclass.GraphType
 import com.example.learningprojects.ui.theme.homescreen.viewmodel.HomeViewModel
+import com.example.learningprojects.ui.theme.lightGrayHome
 import com.example.learningprojects.utils.DeviceHealthManager.format1Digit
 import com.example.learningprojects.utils.DeviceHealthManager.getBatteryRemainingTime
 import com.example.learningprojects.utils.DeviceHealthManager.getPlayStoreApps
@@ -204,7 +208,7 @@ fun HomeScreen(
                         fontFamily = FontFamily(Font(resId = R.font.regular)),
                         fontWeight = FontWeight.W400,
                         modifier = Modifier.wrapContentSize(),
-                        color = Color(0xFF637380)
+                        color = lightGrayHome
                     )
                     CommonText(
                         text = "Pankaj kumar",
@@ -225,8 +229,8 @@ fun HomeScreen(
                     .background(
                         brush = Brush.linearGradient(
                             listOf(
-                                Color(0xFF183669),
-                                Color(0xFF0F375B)
+                                bannerColor1,
+                                bannerColor2
                             )
                         ),
                         shape = RoundedCornerShape(14.dp)
@@ -248,7 +252,7 @@ fun HomeScreen(
                         fontFamily = FontFamily(Font(resId = R.font.google_sans_bold)),
                         fontWeight = FontWeight.W800,
                         modifier = Modifier.wrapContentSize(),
-                        color = MaterialTheme.colorScheme.background
+                        color = PureWhite
                     )
                     Spacer(Modifier.height(4.dp))
                     CommonText(
@@ -418,7 +422,7 @@ fun HomeScreen(
                         shape = RoundedCornerShape(10.dp)
                     )
                     .background(
-                        MaterialTheme.colorScheme.surface,
+                        MaterialTheme.colorScheme.onSurface,
                         shape = RoundedCornerShape(10.dp)
                     )
                     .padding(horizontal = 16.dp, vertical = 20.dp)
@@ -485,7 +489,7 @@ fun HomeScreen(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(resId = R.font.regular)),
                             fontWeight = FontWeight.W400,
-                            color = MaterialTheme.colorScheme.onBackground,
+                            color = lightGrayHome,
                             modifier = Modifier.wrapContentSize(),
                         )
                     }
@@ -507,7 +511,7 @@ fun HomeScreen(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(resId = R.font.regular)),
                             fontWeight = FontWeight.W400,
-                            color = MaterialTheme.colorScheme.onBackground,
+                            color = lightGrayHome,
                             modifier = Modifier.wrapContentSize(),
                         )
                     }
@@ -529,7 +533,7 @@ fun HomeScreen(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(resId = R.font.regular)),
                             fontWeight = FontWeight.W400,
-                            color = MaterialTheme.colorScheme.onBackground,
+                            color = lightGrayHome,
                             modifier = Modifier.wrapContentSize(),
                         )
                     }
@@ -625,7 +629,7 @@ fun TrendingTabLayout(
                 shape = RoundedCornerShape(10.dp)
             )
             .background(
-                MaterialTheme.colorScheme.surface,
+                MaterialTheme.colorScheme.onSurface,
                 shape = RoundedCornerShape(10.dp)
             )
             .background(

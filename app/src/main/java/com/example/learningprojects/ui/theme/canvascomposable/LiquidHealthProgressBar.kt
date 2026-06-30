@@ -44,6 +44,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.learningprojects.R
+import com.example.learningprojects.ui.theme.lightGrayHome
+import com.example.learningprojects.ui.theme.progressCircularDark
+import com.example.learningprojects.ui.theme.unFilteredColor
 import kotlin.math.sin
 
 
@@ -150,11 +153,11 @@ fun CircularHealthMeter(
     modifier: Modifier = Modifier,
     size: Dp = 220.dp,
     strokeWidth: Dp = 15.dp,
-    filledColor: Color = Color(0xFF10CE80), // Vibrant Green
-    unfilledColor: Color = Color(0x33A0A0A0), // Dark gray, partially transparent
+    filledColor: Color = progressCircularDark, // Vibrant Green
+    unfilledColor: Color = unFilteredColor, // Dark gray, partially transparent
     backgroundColor: Color = Color(0xFF0A1931), // Deep Navy Blue
-    textColorMain: Color = Color(0xFF10CE80), // Same vibrant Green
-    textColorSub: Color =  Color(0xFF6F7F9D) // Light Gray
+    textColorMain: Color = progressCircularDark, // Same vibrant Green
+    textColorSub: Color = lightGrayHome // Light Gray
 ) {
     var startAnimation by remember { mutableStateOf(false) }
 

@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.learningprojects.R
 import com.example.learningprojects.ui.theme.commonusablecomponent.CommonText
+import com.example.learningprojects.ui.theme.lightGrayHome
 
 @Composable
 fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
@@ -63,7 +64,7 @@ fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
                 color = Color.LightGray.copy(alpha = 0.5f),
                 shape = RoundedCornerShape(10.dp)
             )
-            .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(10.dp))
+            .background(MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(10.dp))
             .padding(horizontal = 16.dp, vertical = 20.dp)
     ) {
 
@@ -114,7 +115,7 @@ fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
             fontSize = 13.sp,
             fontFamily = FontFamily(Font(resId = R.font.regular)),
             fontWeight = FontWeight.W400,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = lightGrayHome,
             modifier = Modifier.wrapContentSize(),
         )
         Spacer(Modifier.height(15.dp))

@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = AccentGreen,
+    primary = progressCircularDark,
     background = PureBlack,
     surface = BottomNavigationDark,      // #0D1527 -> Deep Midnight Blue
     onBackground = whiteColor,
@@ -22,7 +22,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = AccentGreen,
+    primary = progressCircularLight,
     background = PureWhite,
     surface = BottomNavigationLight,
     onBackground = blackColor,
