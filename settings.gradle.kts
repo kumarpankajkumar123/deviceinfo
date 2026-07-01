@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Learning Projects"
+rootProject.name = "TagFrame Learning"
 include(":app")
  

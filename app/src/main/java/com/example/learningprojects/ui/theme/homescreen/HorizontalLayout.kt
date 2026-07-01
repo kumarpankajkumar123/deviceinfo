@@ -1,5 +1,6 @@
 package com.example.learningprojects.ui.theme.homescreen
 
+import android.graphics.ColorFilter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,7 +38,8 @@ fun HorizontalLayout(item: DeviceFeactures) {
 
     Column(
         modifier = Modifier
-            .wrapContentSize()
+            .width(90.dp)
+            .wrapContentHeight()
             .shadow(
                 elevation = 8.dp,
                 shape = RoundedCornerShape(14.dp),
@@ -48,12 +52,8 @@ fun HorizontalLayout(item: DeviceFeactures) {
                 shape = RoundedCornerShape(14.dp)
             )
             .background(
-                MaterialTheme.colorScheme.surface,
+                MaterialTheme.colorScheme.onSurface,
                 shape = RoundedCornerShape(14.dp)
-            )
-            .background(
-                shape = RoundedCornerShape(10.dp),
-                color = MaterialTheme.colorScheme.surface
             )
             .padding(vertical = 20.dp, horizontal = 15.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -64,14 +64,15 @@ fun HorizontalLayout(item: DeviceFeactures) {
             modifier = Modifier
                 .size(45.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.25f))
+                .background(item.color.copy(alpha = 0.15f))
                 .padding(10.dp),
             contentAlignment = Alignment.Center
         ) {
             Image(
                 painter = painterResource(id = item.batteryImage),
                 contentDescription = "null",
-                Modifier.size(25.dp)
+                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(item.color),
+                modifier = Modifier.size(25.dp)
             )
         }
 

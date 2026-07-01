@@ -25,7 +25,9 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -39,7 +41,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -60,7 +65,13 @@ import com.example.learningprojects.ui.theme.commonusablecomponent.CommonText
 import com.example.learningprojects.ui.theme.commonusablecomponent.ReusableAnalyticsGraph
 import com.example.learningprojects.ui.theme.enumclass.GraphType
 import com.example.learningprojects.ui.theme.homescreen.viewmodel.HomeViewModel
+import com.example.learningprojects.ui.theme.horizontal1
+import com.example.learningprojects.ui.theme.horizontal2
+import com.example.learningprojects.ui.theme.horizontal3
+import com.example.learningprojects.ui.theme.horizontal4
 import com.example.learningprojects.ui.theme.lightGrayHome
+import com.example.learningprojects.ui.theme.progressCircularDark
+import com.example.learningprojects.ui.theme.ramStorageColor
 import com.example.learningprojects.utils.DeviceHealthManager.format1Digit
 import com.example.learningprojects.utils.DeviceHealthManager.getBatteryRemainingTime
 import com.example.learningprojects.utils.DeviceHealthManager.getPlayStoreApps
@@ -163,23 +174,28 @@ fun HomeScreen(
     val deviceFeatureList = listOf<DeviceFeactures>(
         DeviceFeactures(
             batteryImage = R.drawable.icons8_flash_50,
-            title = "FlashLight"
+            title = "FlashLight",
+            color = horizontal1
         ),
         DeviceFeactures(
             batteryImage = R.drawable.outline_battery_android_0_24,
-            title = "Batt.Saver"
+            title = "Batt.Saver",
+            color = progressCircularDark
         ),
         DeviceFeactures(
             batteryImage = R.drawable.icons8_voice_64,
-            title = "Volume"
+            title = "Volume",
+            color = horizontal2
         ),
         DeviceFeactures(
             batteryImage = R.drawable.outline_light_mode_24,
-            title = "Brightness"
+            title = "Brightness",
+            color = horizontal3
         ),
         DeviceFeactures(
             batteryImage = R.drawable.icons8_info_32,
-            title = "Device Info"
+            title = "Device Info",
+            color = horizontal4
         ),
     )
 
@@ -223,21 +239,29 @@ fun HomeScreen(
         }
         item {
             Row(
-                modifier = Modifier
+                Modifier
                     .padding(top = 15.dp)
                     .fillMaxWidth()
-                    .background(
-                        brush = Brush.linearGradient(
-                            listOf(
+                    .drawWithCache {
+                        val brush = Brush.linearGradient(
+                            colors = listOf(
                                 bannerColor1,
-                                bannerColor2
-                            )
-                        ),
-                        shape = RoundedCornerShape(14.dp)
-                    )
-                    .padding(horizontal = 20.dp, vertical = 25.dp)
+                                bannerColor2.copy(alpha = 1f)
+                            ),
+                            start = Offset(0f, size.height), // Bottom Left
+                            end = Offset(size.width, 0f)     // Top Right
+                        )
 
+                        onDrawBehind {
+                            drawRoundRect(
+                                brush = brush,
+                                cornerRadius = CornerRadius(14.dp.toPx())
+                            )
+                        }
+                    }
+                    .padding(horizontal = 20.dp, vertical = 25.dp)
             )
+
             {
                 CircularHealthMeter(healthValue = state?.overallHealth?:54, size = 140.dp, strokeWidth = 14.dp)
                 Column(
@@ -261,7 +285,7 @@ fun HomeScreen(
                         fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
                         fontWeight = FontWeight.W600,
                         modifier = Modifier.wrapContentSize(),
-                        color = Color(0xFF6F7F9D)
+                        color = lightGrayHome
                     )
 
                     Spacer(Modifier.height(20.dp))
@@ -280,20 +304,20 @@ fun HomeScreen(
                             CommonText(
                                 text = "Battery".uppercase(),
                                 fontSize = 13.sp,
-                                fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
-                                fontWeight = FontWeight.W600,
+                                fontFamily = FontFamily(Font(resId = R.font.google_sans_bold)),
+                                fontWeight = FontWeight.W800,
                                 modifier = Modifier.wrapContentSize(),
-                                color = Color(0xFF6F7F9D)
+                                color = lightGrayHome
                             )
                             Spacer(Modifier.height(4.dp))
 
                             CommonText(
                                 text = "${state?.battery}%",
                                 fontSize = 14.sp,
-                                fontFamily = FontFamily(Font(resId = R.font.regular)),
-                                fontWeight = FontWeight.W400,
+                                fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
+                                fontWeight = FontWeight.W600,
                                 modifier = Modifier.wrapContentSize(),
-                                color = Color(0xFFFFFFFF)
+                                color = progressCircularDark
                             )
                         }
 
@@ -305,18 +329,19 @@ fun HomeScreen(
                             CommonText(
                                 text = "CPU TEMP".uppercase(),
                                 fontSize = 13.sp,
-                                fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
-                                fontWeight = FontWeight.W600,
+                                fontFamily = FontFamily(Font(resId = R.font.google_sans_bold)),
+                                fontWeight = FontWeight.W800,
                                 modifier = Modifier.wrapContentSize(),
-                                color = Color(0xFF6F7F9D)
+                                color = lightGrayHome
                             )
                             Spacer(Modifier.height(4.dp))
                             CommonText(
                                 text = "${state?.batteryTemp}°C",
                                 fontSize = 14.sp,
-                                fontFamily = FontFamily(Font(resId = R.font.regular)),
-                                fontWeight = FontWeight.W400,
+                                fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
+                                fontWeight = FontWeight.W600,
                                 modifier = Modifier.wrapContentSize(),
+                                color = progressCircularDark
                             )
                         }
                     }
@@ -340,19 +365,20 @@ fun HomeScreen(
                             CommonText(
                                 text = "ram".uppercase(),
                                 fontSize = 13.sp,
-                                fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
-                                fontWeight = FontWeight.W600,
+                                fontFamily = FontFamily(Font(resId = R.font.google_sans_bold)),
+                                fontWeight = FontWeight.W800,
                                 modifier = Modifier.wrapContentSize(),
-                                color = Color(0xFF6F7F9D)
+                                color = lightGrayHome
                             )
                             Spacer(Modifier.height(5.dp))
 
                             CommonText(
                                 text = "${state?.availableRam}%",
                                 fontSize = 14.sp,
-                                fontFamily = FontFamily(Font(resId = R.font.regular)),
-                                fontWeight = FontWeight.W400,
+                                fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
+                                fontWeight = FontWeight.W600,
                                 modifier = Modifier.wrapContentSize(),
+                                color = ramStorageColor
                             )
                         }
 
@@ -364,19 +390,20 @@ fun HomeScreen(
                             CommonText(
                                 text = "storage".uppercase(),
                                 fontSize = 13.sp,
-                                fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
-                                fontWeight = FontWeight.W600,
+                                fontFamily = FontFamily(Font(resId = R.font.google_sans_bold)),
+                                fontWeight = FontWeight.W800,
                                 modifier = Modifier.wrapContentSize(),
-                                color = Color(0xFF6F7F9D)
+                                color = lightGrayHome
                             )
                             Spacer(Modifier.height(5.dp))
 
                             CommonText(
                                 text = "${state?.availableStorage}%",
                                 fontSize = 14.sp,
-                                fontFamily = FontFamily(Font(resId = R.font.regular)),
-                                fontWeight = FontWeight.W400,
+                                fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
+                                fontWeight = FontWeight.W600,
                                 modifier = Modifier.wrapContentSize(),
+                                color = ramStorageColor
                             )
                         }
                     }
@@ -432,11 +459,11 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.mobile_2_24dp_01147b___fill0_wght400_grad0_opsz24),
+                        painter = painterResource(id = R.drawable.device_thermostat_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                         contentDescription = "null",
                         Modifier.size(24.dp)
                     )
-                    Spacer(Modifier.width(12.dp))
+                    Spacer(Modifier.width(10.dp))
                     CommonText(
                         text = "Device Temperature",
                         fontSize = 15.sp,
@@ -450,10 +477,10 @@ fun HomeScreen(
                         modifier = Modifier
                             .wrapContentSize()
                             .background(
-                                shape = RoundedCornerShape(5.dp),
+                                shape = CircleShape,
                                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
                             )
-                            .padding(5.dp)
+                            .padding(horizontal = 10.dp, vertical = 5.dp)
                     ) {
                         CommonText(
                             text = "Normal",
@@ -632,10 +659,6 @@ fun TrendingTabLayout(
                 MaterialTheme.colorScheme.onSurface,
                 shape = RoundedCornerShape(10.dp)
             )
-            .background(
-                color = Color.LightGray.copy(alpha = 0.2f),
-                shape = RoundedCornerShape(14)
-            )
             .padding(0.dp)
     ) {
 
@@ -645,13 +668,13 @@ fun TrendingTabLayout(
 
             Box(
                 modifier = Modifier
-                    .weight(1f)
+                    .width(75.dp)
                     .clip(RoundedCornerShape(topStart = 14.dp, bottomEnd = 14.dp))
                     .then(
                         if (isSelected) {
                             Modifier.border(
                                 width = 1.dp,
-                                color = Color.LightGray.copy(alpha = 0.5f),
+                                color = lightGrayHome.copy(alpha = 0.5f),
                                 shape = RoundedCornerShape(
                                     topStart = 14.dp,
                                     bottomEnd = 14.dp
@@ -667,23 +690,24 @@ fun TrendingTabLayout(
                         else
                             Color.Transparent
                     )
+                    .padding(horizontal = 10.dp, vertical = 10.dp)
                     .clickable {
                         onTabSelected(index)
-                    }
-                    .padding(vertical = 10.dp),
+                    },
                 contentAlignment = Alignment.Center
             ) {
 
                 CommonText(
                     text = title,
-                    fontSize = 12.sp,
-                    fontFamily = FontFamily(Font(resId = R.font.regular)),
-                    fontWeight = FontWeight.W400,
+                    fontSize = 13.sp,
+                    fontFamily = FontFamily(Font(resId = R.font.google_sans_bold)),
+                    fontWeight = FontWeight.W800,
                     color = if (isSelected)
-                        Color.White
+                        MaterialTheme.colorScheme.onBackground
                     else
-                        MaterialTheme.colorScheme.onSurface,
+                        lightGrayHome,
                     modifier = Modifier.wrapContentSize(),
+                    isSingleLine = true
                 )
             }
         }

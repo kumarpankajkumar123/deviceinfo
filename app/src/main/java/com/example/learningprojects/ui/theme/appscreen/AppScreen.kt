@@ -37,6 +37,7 @@ import com.example.learningprojects.ui.theme.commonusablecomponent.CommonText
 import com.example.learningprojects.ui.theme.homescreen.DeviceStatusDummyModel
 import com.example.learningprojects.ui.theme.homescreen.DeviceStatusLayout
 import com.example.learningprojects.ui.theme.homescreen.viewmodel.HomeViewModel
+import com.example.learningprojects.ui.theme.lightGrayHome
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
@@ -46,8 +47,10 @@ fun AppScreen(
     val context = LocalContext.current
     val state by viewModel.appsInfo.collectAsState()
     val installedApp by viewModel.playStoreAppsCount.collectAsState()
+    val freeStorage by viewModel.health.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.loadInstalledApps(context)
+        viewModel.loadHealth(context)
 //        viewModel.loadApps(context)
 //        viewModel.loadAppss(context)
     }
@@ -58,24 +61,24 @@ fun AppScreen(
             batteryTime = "",
             batteryPercentage = "${state?.totalApps}",
             usagePercentage = 0f,
-            image = R.drawable.database_24dp_01147b___fill0_wght400_grad0_opsz24,
-            temp = "${installedApp} User. ${state?.systemApps} System",
-            name = "Installed App"
+            image = R.drawable.cube,
+            temp = "${installedApp} User - ${state?.systemApps} System",
+            name = "App Installed"
         ),
         DeviceStatusDummyModel(
             batteryTime = "",
             batteryPercentage = "${state?.totalApps}",
             usagePercentage = 0f,
-            image = R.drawable.database_24dp_01147b___fill0_wght400_grad0_opsz24,
-            temp = "${state?.userApps} User. ${state?.systemApps} System",
-            name = "Installed App"
+            image = R.drawable.hard_drive,
+            temp = "Total across all apps",
+            name = "Apps Storage"
         ),
         DeviceStatusDummyModel(
             batteryTime = "",
             batteryPercentage = "${state?.totalApps}",
             usagePercentage = 0f,
-            image = R.drawable.database_24dp_01147b___fill0_wght400_grad0_opsz24,
-            temp = "Installed App",
+            image = R.drawable.outline_battery_android_0_24,
+            temp = "Top Battery",
             name = ""
         ),
         DeviceStatusDummyModel(
@@ -83,7 +86,7 @@ fun AppScreen(
             batteryPercentage = "${state?.totalApps}",
             usagePercentage = 0f,
             image = R.drawable.database_24dp_01147b___fill0_wght400_grad0_opsz24,
-            temp = "Installed App",
+            temp = "Free Storage",
             name = ""
         ),
     )
@@ -143,7 +146,7 @@ fun AppScreen(
                 fontSize = 12.sp,
                 fontFamily = FontFamily(Font(resId = R.font.regular)),
                 fontWeight = FontWeight.W400,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = lightGrayHome,
                 modifier = Modifier.wrapContentSize(),
                 isSingleLine = true
             )

@@ -1,5 +1,7 @@
 package com.example.learningprojects.ui.theme.homescreen
 
+import androidx.compose.ui.graphics.Color
+
 data class DeviceStatusDummyModel(
     val batteryTime: String,
     val batteryPercentage : String,
@@ -11,7 +13,8 @@ data class DeviceStatusDummyModel(
 
 data class DeviceFeactures(
     val batteryImage : Int,
-    val title : String
+    val title : String,
+    val color : Color
 )
 
 data class GraphPoint(

@@ -17,6 +17,9 @@ private val DarkColorScheme = darkColorScheme(
     surface = BottomNavigationDark,      // #0D1527 -> Deep Midnight Blue
     onBackground = whiteColor,
     onSurface = darkContainerColor,
+    tertiaryContainer = progressCircularDark,
+    secondary = progressCircularDark,
+    onSecondary = filterSelectedColorDark
 
 
 )
@@ -26,7 +29,10 @@ private val LightColorScheme = lightColorScheme(
     background = PureWhite,
     surface = BottomNavigationLight,
     onBackground = blackColor,
-    onSurface = lightContainerColor
+    onSurface = lightContainerColor,
+    tertiaryContainer = bannerColor2,
+    secondary = progressCircularLight,
+    onSecondary = filterSelectedColorLight
 )
 
 @Composable

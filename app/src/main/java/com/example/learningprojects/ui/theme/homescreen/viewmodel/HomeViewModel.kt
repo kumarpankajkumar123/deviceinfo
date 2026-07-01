@@ -2,6 +2,7 @@ package com.example.learningprojects.ui.theme.homescreen.viewmodel
 
 import android.content.Context
 import android.os.Build
+import android.os.StatFs
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.example.learningprojects.ui.theme.homescreen.AppInfo
@@ -67,6 +68,16 @@ class HomeViewModel : ViewModel() {
             usedStorageGB = bytesToGB(used),
 
             )
+    }
+
+    private val _storageInfo =
+        MutableStateFlow<StatFs?>(null)
+
+    val storageInfo = _storageInfo.asStateFlow()
+
+    fun getStorageInfo(context: Context){
+        val storage = DeviceHealthManager.getStorageUsage()
+
     }
 
     private val _appsInfo =

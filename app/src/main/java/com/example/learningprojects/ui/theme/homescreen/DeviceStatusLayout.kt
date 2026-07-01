@@ -64,7 +64,10 @@ fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
                 color = Color.LightGray.copy(alpha = 0.5f),
                 shape = RoundedCornerShape(10.dp)
             )
-            .background(MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(10.dp))
+            .background(
+                MaterialTheme.colorScheme.onSurface,
+                shape = RoundedCornerShape(10.dp)
+            )
             .padding(horizontal = 16.dp, vertical = 20.dp)
     ) {
 
@@ -118,9 +121,9 @@ fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
             color = lightGrayHome,
             modifier = Modifier.wrapContentSize(),
         )
-        Spacer(Modifier.height(15.dp))
 
-        if (animatedProgress != 0f){
+        if (animatedProgress != 0f) {
+            Spacer(Modifier.height(15.dp))
             CustomLinearProgressBar(
                 progress = animatedProgress,
                 progressColor = colors.darkColor,

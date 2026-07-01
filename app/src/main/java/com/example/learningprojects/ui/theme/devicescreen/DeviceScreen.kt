@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -28,7 +29,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -44,7 +48,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learningprojects.R
 import com.example.learningprojects.ui.theme.AccentGreen
 import com.example.learningprojects.ui.theme.LightGrayText
+import com.example.learningprojects.ui.theme.PureWhite
+import com.example.learningprojects.ui.theme.bannerColor1
+import com.example.learningprojects.ui.theme.bannerColor2
 import com.example.learningprojects.ui.theme.commonusablecomponent.CommonText
+import com.example.learningprojects.ui.theme.lightGrayHome
 import com.example.learningprojects.ui.theme.topProgressLight
 import com.example.learningprojects.ui.theme.topProgressLight2
 import com.example.learningprojects.utils.Utils
@@ -104,7 +112,7 @@ fun DeviceScreen(
                     fontSize = 12.sp,
                     fontFamily = FontFamily(Font(resId = R.font.regular)),
                     fontWeight = FontWeight.W400,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = lightGrayHome,
                     modifier = Modifier.wrapContentSize(),
                     isSingleLine = true
                 )
@@ -127,26 +135,43 @@ fun DeviceScreen(
                         color = LightGrayText,
                         shape = RoundedCornerShape(20.dp)
                     )
-                    .background(
-                        brush = Brush.linearGradient(
-                            listOf<Color>(
-                                topProgressLight,
-                                topProgressLight2
+                    .drawWithCache {
+                        val brush = Brush.linearGradient(
+                            colors = listOf(
+                                bannerColor1,
+                                bannerColor2.copy(alpha = 1f)
+                            ),
+                            start = Offset(0f, size.height), // Bottom Left
+                            end = Offset(size.width, 0f)     // Top Right
+                        )
+
+                        onDrawBehind {
+                            drawRoundRect(
+                                brush = brush,
+                                cornerRadius = CornerRadius(14.dp.toPx())
                             )
-                        ),
-                        shape = RoundedCornerShape(20.dp)
-                    )
+                        }
+                    }
                     .padding(horizontal = 40.dp, vertical = 24.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Image(
-                    painter = painterResource(id = R.drawable.mobile_2_24dp_01147b___fill0_wght400_grad0_opsz24),
-                    contentDescription = "null",
-                    colorFilter = ColorFilter.tint(AccentGreen),
-                    modifier = Modifier.size(50.dp)
-                )
+                Box(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                        .background(color = AccentGreen.copy(alpha = 0.25f))
+                        .padding(all = 5.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.mobile_2_24dp_01147b___fill0_wght400_grad0_opsz24),
+                        contentDescription = "null",
+                        colorFilter = ColorFilter.tint(AccentGreen),
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+
                 Spacer(Modifier.width(10.dp))
 
                 Column(
@@ -161,7 +186,8 @@ fun DeviceScreen(
                         fontFamily = FontFamily(Font(resId = R.font.google_sans_bold)),
                         fontWeight = FontWeight.W800,
                         modifier = Modifier.wrapContentSize(),
-                        color = MaterialTheme.colorScheme.background
+                        color = PureWhite,
+                        isSingleLine = true
                     )
                     CommonText(
                         text = "Android ${androidVersion} ${deviceName}",
@@ -169,7 +195,8 @@ fun DeviceScreen(
                         fontFamily = FontFamily(Font(resId = R.font.regular)),
                         fontWeight = FontWeight.W400,
                         modifier = Modifier.wrapContentSize(),
-                        color = LightGrayText
+                        color = lightGrayHome,
+                        isSingleLine = true
                     )
 
                     Row(
@@ -190,7 +217,8 @@ fun DeviceScreen(
                             fontFamily = FontFamily(Font(resId = R.font.regular)),
                             fontWeight = FontWeight.W400,
                             modifier = Modifier.wrapContentSize(),
-                            color = AccentGreen
+                            color = AccentGreen,
+                            isSingleLine = true
                         )
                     }
                 }

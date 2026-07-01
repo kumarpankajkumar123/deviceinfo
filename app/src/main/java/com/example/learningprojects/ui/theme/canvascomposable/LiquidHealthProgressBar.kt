@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -153,10 +154,10 @@ fun CircularHealthMeter(
     modifier: Modifier = Modifier,
     size: Dp = 220.dp,
     strokeWidth: Dp = 15.dp,
-    filledColor: Color = progressCircularDark, // Vibrant Green
+    filledColor: Color = MaterialTheme.colorScheme.secondary, // Vibrant Green
     unfilledColor: Color = unFilteredColor, // Dark gray, partially transparent
     backgroundColor: Color = Color(0xFF0A1931), // Deep Navy Blue
-    textColorMain: Color = progressCircularDark, // Same vibrant Green
+    textColorMain: Color = MaterialTheme.colorScheme.secondary, // Same vibrant Green
     textColorSub: Color = lightGrayHome // Light Gray
 ) {
     var startAnimation by remember { mutableStateOf(false) }
