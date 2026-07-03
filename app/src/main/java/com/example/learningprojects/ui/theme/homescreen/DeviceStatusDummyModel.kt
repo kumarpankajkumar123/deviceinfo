@@ -8,7 +8,9 @@ data class DeviceStatusDummyModel(
     val usagePercentage : Float = 0f,
     val image: Int,
     val temp : String,
-    val name : String
+    val name : String,
+    val color : Color,
+    val speed : String? = null
 )
 
 data class DeviceFeactures(

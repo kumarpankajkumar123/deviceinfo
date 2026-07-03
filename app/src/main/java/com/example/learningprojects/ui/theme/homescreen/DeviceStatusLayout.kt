@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +41,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.learningprojects.R
+import com.example.learningprojects.ui.theme.AccentGreen
 import com.example.learningprojects.ui.theme.commonusablecomponent.CommonText
 import com.example.learningprojects.ui.theme.lightGrayHome
 
@@ -52,7 +55,8 @@ fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
     val colors = getStatusColors(item.name)
     Column(
         modifier = Modifier
-            .wrapContentSize()
+            .wrapContentWidth()
+            .wrapContentHeight()
             .shadow(
                 elevation = 8.dp,
                 shape = RoundedCornerShape(10.dp),
@@ -81,13 +85,13 @@ fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(colors.darkColor.copy(alpha = 0.15f)),
+                    .background( shape = CircleShape, color = item.color.copy(alpha = 0.21f)),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(id = item.image),
                     contentDescription = "battery",
-                    colorFilter = ColorFilter.tint(colors.darkColor),
+                    colorFilter = ColorFilter.tint(item.color),
                     modifier = Modifier
                         .size(24.dp)
                 )
@@ -120,6 +124,7 @@ fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
             fontWeight = FontWeight.W400,
             color = lightGrayHome,
             modifier = Modifier.wrapContentSize(),
+            isSingleLine = true
         )
 
         if (animatedProgress != 0f) {
@@ -131,16 +136,29 @@ fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
                     .fillMaxWidth()
                     .padding(0.dp)
             )
-            Spacer(Modifier.height(5.dp))
         }
-
+        else{
+            Spacer(Modifier.height(5.dp))
+            CommonText(
+                text = item.speed?:"",
+                fontSize = 13.sp,
+                fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
+                fontWeight = FontWeight.W600,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.wrapContentSize(),
+                isSingleLine = true
+            )
+        }
         CommonText(
             text = item.temp,
             fontSize = 13.sp,
             fontFamily = FontFamily(Font(resId = R.font.regular)),
             fontWeight = FontWeight.W400,
             color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.wrapContentSize(),
+            modifier = Modifier
+                .padding(top = 5.dp)
+                .wrapContentSize(),
+            isSingleLine = true
         )
 
     }

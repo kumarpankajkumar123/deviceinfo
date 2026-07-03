@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModel
 import com.example.learningprojects.ui.theme.homescreen.AppInfo
 import com.example.learningprojects.ui.theme.homescreen.AppsResult
 import com.example.learningprojects.ui.theme.homescreen.DeviceHealth
+import com.example.learningprojects.ui.theme.homescreen.WifiUiState
 import com.example.learningprojects.utils.DeviceHealthManager
 import com.example.learningprojects.utils.DeviceHealthManager.bytesToGB
+import com.example.learningprojects.utils.WifiInfoHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -70,6 +72,22 @@ class HomeViewModel : ViewModel() {
             )
     }
 
+    private val _wifiState = MutableStateFlow(WifiUiState())
+    val wifiState = _wifiState.asStateFlow()
+
+    fun loadWifiInfo(context: Context) {
+
+        _wifiState.value = WifiUiState(
+            wifiName = WifiInfoHelper.getWifiName(context),
+            band = WifiInfoHelper.getWifiBand(context),
+            frequency = WifiInfoHelper.getFrequency(context),
+            rssi = WifiInfoHelper.getRssi(context),
+            linkSpeed = WifiInfoHelper.getLinkSpeed(context),
+            txSpeed = WifiInfoHelper.getTxSpeed(context),
+            rxSpeed = WifiInfoHelper.getRxSpeed(context),
+            standard = WifiInfoHelper.getWifiStandard(context)
+        )
+    }
     private val _storageInfo =
         MutableStateFlow<StatFs?>(null)
 

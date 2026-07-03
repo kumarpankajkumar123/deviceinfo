@@ -1,7 +1,13 @@
 package com.example.learningprojects.ui.theme.homescreen
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Build
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -55,6 +61,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learningprojects.R
 import com.example.learningprojects.ui.theme.PureWhite
@@ -84,9 +91,64 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
     val state by viewModel.health.collectAsState()
+    val wifiState by viewModel.wifiState.collectAsState()
+
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+
+            val granted = permissions.values.all { it }
+
+            Log.d("WifiInfo", "Permissions = $granted")
+
+            if (granted) {
+                viewModel.loadWifiInfo(context)
+            }
+        }
+
     LaunchedEffect(Unit) {
+
         viewModel.loadHealth(context)
+
+        val locationGranted =
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+
+        val nearbyGranted =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.NEARBY_WIFI_DEVICES
+                ) == PackageManager.PERMISSION_GRANTED
+            } else true
+
+        if (locationGranted && nearbyGranted) {
+            viewModel.loadWifiInfo(context)
+        } else {
+
+            val permissions = mutableListOf(
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                permissions += Manifest.permission.NEARBY_WIFI_DEVICES
+            }
+
+            permissionLauncher.launch(permissions.toTypedArray())
+        }
     }
+
+    Log.d("WifiInfo", "SSID       : ${wifiState.wifiName}")
+    Log.d("WifiInfo", "Band       : ${wifiState.band}")
+    Log.d("WifiInfo", "Frequency  : ${wifiState.frequency} MHz")
+    Log.d("WifiInfo", "RSSI       : ${wifiState.rssi} dBm")
+    Log.d("WifiInfo", "Link Speed : ${wifiState.linkSpeed} Mbps")
+    Log.d("WifiInfo", "TX Speed   : ${wifiState.txSpeed} Mbps")
+    Log.d("WifiInfo", "RX Speed   : ${wifiState.rxSpeed} Mbps")
+    Log.d("WifiInfo", "Standard   : ${wifiState.standard}")
     var selectedTab by remember { mutableIntStateOf(0) }
     val currentGraphType = remember(selectedTab) {
         when (selectedTab) {
@@ -143,7 +205,8 @@ fun HomeScreen(
             usagePercentage = state?.battery?.toFloat()?:0f,
             image = R.drawable.outline_battery_android_0_24,
             temp = "${state?.batteryTemp}°C",
-            name = "Battery"
+            name = "Battery",
+            color = MaterialTheme.colorScheme.secondary
         ),
         DeviceStatusDummyModel(
             batteryTime = "${state?.totalRamGb?.format1Digit()}GB",
@@ -151,7 +214,8 @@ fun HomeScreen(
             usagePercentage = state?.ramUsage?.toFloat()?:0f,
             image = R.drawable.database_24dp_01147b___fill0_wght400_grad0_opsz24,
             temp = "${state?.usedRamGb?.format1Digit()}GB Used- ${state?.availableRamGb?.format1Digit()}GB Free",
-            name = "RAM Usage"
+            name = "RAM Usage",
+            color = horizontal2
         ),
         DeviceStatusDummyModel(
             batteryTime = "${state?.totalStorageGb?.format1Digit()}GB",
@@ -159,14 +223,17 @@ fun HomeScreen(
             usagePercentage = state?.storageUsage?.toFloat()?:0f,
             image = R.drawable.database_24dp_01147b___fill0_wght400_grad0_opsz24,
             temp = "${state?.usedStorageGB?.format1Digit()}GB Used - ${state?.availableStorageGb?.format1Digit()}GB Free",
-            name = "Storage"
+            name = "Storage",
+            horizontal4
         ),
         DeviceStatusDummyModel(
             batteryTime = "4h 22m",
-            batteryPercentage = "45%",
+            batteryPercentage = wifiState.wifiName,
             image = R.drawable.outline_android_wifi_4_bar_question_24,
-            temp = "40C",
-            name = "Wifi"
+            speed = "${wifiState.txSpeed} - ${wifiState.rxSpeed} ",
+            name = "WiFi-${wifiState.band}",
+            color = horizontal3,
+            temp = wifiState.standard
         ),
     )
 
@@ -378,7 +445,7 @@ fun HomeScreen(
                                 fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
                                 fontWeight = FontWeight.W600,
                                 modifier = Modifier.wrapContentSize(),
-                                color = ramStorageColor
+                                color = horizontal4
                             )
                         }
 
@@ -403,7 +470,7 @@ fun HomeScreen(
                                 fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
                                 fontWeight = FontWeight.W600,
                                 modifier = Modifier.wrapContentSize(),
-                                color = ramStorageColor
+                                color = horizontal2
                             )
                         }
                     }

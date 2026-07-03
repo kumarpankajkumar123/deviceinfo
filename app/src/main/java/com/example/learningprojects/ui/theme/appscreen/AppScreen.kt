@@ -37,6 +37,9 @@ import com.example.learningprojects.ui.theme.commonusablecomponent.CommonText
 import com.example.learningprojects.ui.theme.homescreen.DeviceStatusDummyModel
 import com.example.learningprojects.ui.theme.homescreen.DeviceStatusLayout
 import com.example.learningprojects.ui.theme.homescreen.viewmodel.HomeViewModel
+import com.example.learningprojects.ui.theme.horizontal2
+import com.example.learningprojects.ui.theme.horizontal3
+import com.example.learningprojects.ui.theme.horizontal4
 import com.example.learningprojects.ui.theme.lightGrayHome
 
 @RequiresApi(Build.VERSION_CODES.R)
@@ -63,7 +66,8 @@ fun AppScreen(
             usagePercentage = 0f,
             image = R.drawable.cube,
             temp = "${installedApp} User - ${state?.systemApps} System",
-            name = "App Installed"
+            name = "App Installed",
+            color = MaterialTheme.colorScheme.secondary
         ),
         DeviceStatusDummyModel(
             batteryTime = "",
@@ -71,7 +75,8 @@ fun AppScreen(
             usagePercentage = 0f,
             image = R.drawable.hard_drive,
             temp = "Total across all apps",
-            name = "Apps Storage"
+            name = "Apps Storage",
+            color = horizontal4
         ),
         DeviceStatusDummyModel(
             batteryTime = "",
@@ -79,7 +84,8 @@ fun AppScreen(
             usagePercentage = 0f,
             image = R.drawable.outline_battery_android_0_24,
             temp = "Top Battery",
-            name = ""
+            name = "",
+            color = horizontal3
         ),
         DeviceStatusDummyModel(
             batteryTime = "",
@@ -87,7 +93,9 @@ fun AppScreen(
             usagePercentage = 0f,
             image = R.drawable.database_24dp_01147b___fill0_wght400_grad0_opsz24,
             temp = "Free Storage",
-            name = ""
+            name = "",
+            color = horizontal2
+
         ),
     )
     val appTypeList = listOf<String>(

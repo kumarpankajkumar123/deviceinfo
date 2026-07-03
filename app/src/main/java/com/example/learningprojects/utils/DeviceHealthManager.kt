@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Environment
@@ -422,6 +423,28 @@ object DeviceHealthManager {
             DeviceInfoModel("Battery", "${getBattery(context)}%"),
             DeviceInfoModel("Kernel", System.getProperty("os.version") ?: "Unknown")
         )
+    }
+
+    fun getWifiName(context: Context): String? {
+        val wifiManager =
+            context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
+        val info = wifiManager.connectionInfo
+
+        return info.ssid?.replace("\"", "")
+    }
+    fun getWifiBand(context: Context): String {
+        val wifiManager =
+            context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
+        val freq = wifiManager.connectionInfo.frequency
+        val rssi = wifiManager.connectionInfo.rssi
+        return when {
+            freq in 2400..2500 -> "2.4 GHz"
+            freq in 4900..5900 -> "5 GHz"
+            freq in 5925..7125 -> "6 GHz"
+            else -> "Unknown"
+        }
     }
 
 }
