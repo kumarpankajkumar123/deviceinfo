@@ -6,3 +6,4 @@ data class AppUsageItem(
     val progress: Float,      // 0f to 100f
     val color: androidx.compose.ui.graphics.Color
 )
+

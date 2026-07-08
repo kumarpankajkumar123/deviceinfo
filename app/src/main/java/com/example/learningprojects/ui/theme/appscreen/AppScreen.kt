@@ -34,13 +34,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learningprojects.R
 import com.example.learningprojects.ui.theme.commonusablecomponent.CommonText
-import com.example.learningprojects.ui.theme.homescreen.DeviceStatusDummyModel
-import com.example.learningprojects.ui.theme.homescreen.DeviceStatusLayout
 import com.example.learningprojects.ui.theme.homescreen.viewmodel.HomeViewModel
 import com.example.learningprojects.ui.theme.horizontal2
 import com.example.learningprojects.ui.theme.horizontal3
 import com.example.learningprojects.ui.theme.horizontal4
 import com.example.learningprojects.ui.theme.lightGrayHome
+import com.example.learningprojects.utils.Utils.toGB
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
@@ -52,52 +51,44 @@ fun AppScreen(
     val installedApp by viewModel.playStoreAppsCount.collectAsState()
     val freeStorage by viewModel.health.collectAsState()
     LaunchedEffect(Unit) {
-        viewModel.loadInstalledApps(context)
-        viewModel.loadHealth(context)
-//        viewModel.loadApps(context)
-//        viewModel.loadAppss(context)
+
+        if (viewModel.appsInfo.value == null) {
+            viewModel.loadInstalledApps(context)
+        }
+
+        if (viewModel.health.value == null) {
+            viewModel.loadHealth(context)
+        }
     }
 
-
-    val list = listOf<DeviceStatusDummyModel>(
-        DeviceStatusDummyModel(
-            batteryTime = "",
-            batteryPercentage = "${state?.totalApps}",
-            usagePercentage = 0f,
+    val gridlist = listOf<AppLayoutGrid>(
+        AppLayoutGrid(
+            title = "App Installed",
+            description = "${installedApp} User - ${state?.systemApps} System",
             image = R.drawable.cube,
-            temp = "${installedApp} User - ${state?.systemApps} System",
-            name = "App Installed",
+            actualValue = "${state?.totalApps}",
             color = MaterialTheme.colorScheme.secondary
-        ),
-        DeviceStatusDummyModel(
-            batteryTime = "",
-            batteryPercentage = "${state?.totalApps}",
-            usagePercentage = 0f,
+        ), AppLayoutGrid(
+            title = "Apps Storage",
+            description = "Total across all apps",
             image = R.drawable.hard_drive,
-            temp = "Total across all apps",
-            name = "Apps Storage",
+            actualValue = "${state?.appsStorage?.toGB()}",
             color = horizontal4
-        ),
-        DeviceStatusDummyModel(
-            batteryTime = "",
-            batteryPercentage = "${state?.totalApps}",
-            usagePercentage = 0f,
+        ), AppLayoutGrid(
+            title = "Top Battery",
+            description = "12% drain today",
             image = R.drawable.outline_battery_android_0_24,
-            temp = "Top Battery",
-            name = "",
+            actualValue = "Instagram",
             color = horizontal3
-        ),
-        DeviceStatusDummyModel(
-            batteryTime = "",
-            batteryPercentage = "${state?.totalApps}",
-            usagePercentage = 0f,
+        ), AppLayoutGrid(
+            title = "Free Storage",
+            description = "of ${freeStorage?.totalStorageGb} GB total",
             image = R.drawable.database_24dp_01147b___fill0_wght400_grad0_opsz24,
-            temp = "Free Storage",
-            name = "",
+            actualValue = "${freeStorage?.availableStorageGb} GB",
             color = horizontal2
-
-        ),
+        )
     )
+
     val appTypeList = listOf<String>(
         "All Apps", "User Apps", "System Apps", "High Storage Apps"
     )
@@ -114,22 +105,16 @@ fun AppScreen(
     val appList = remember(selectedType, state) {
         when (selectedType) {
 
-            "All Apps" ->
-                (playStoreApps + systemApps)
-                    .distinctBy { it.packageName }
-                    .sortedBy { it.appName }
+            "All Apps" -> (playStoreApps + systemApps).distinctBy { it.packageName }
+                .sortedBy { it.appName }
 
-            "User Apps" ->
-                playStoreApps
+            "User Apps" -> playStoreApps
 
-            "System Apps" ->
-                systemApps
+            "System Apps" -> systemApps
 
-            "High Storage Apps" ->
-                emptyList() // baad me implement kar lena
+            "High Storage Apps" -> emptyList() // baad me implement kar lena
 
-            else ->
-                emptyList()
+            else -> emptyList()
         }
     }
     LazyColumn(
@@ -161,7 +146,7 @@ fun AppScreen(
             Spacer(Modifier.height(15.dp))
         }
 
-        items(list.chunked(2)) { rowItems ->
+        items(gridlist.chunked(2)) { rowItems ->
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -172,7 +157,8 @@ fun AppScreen(
                     Box(
                         modifier = Modifier.weight(1f)
                     ) {
-                        DeviceStatusLayout(item)
+                        AppScreenGriLayout(item)
+
                     }
                 }
 
@@ -191,12 +177,9 @@ fun AppScreen(
             ) {
                 items(appTypeList) { name ->
                     AppTypeLayout(
-                        name,
-                        isSelected = selectedType == name,
-                        onClick = {
+                        name, isSelected = selectedType == name, onClick = {
                             selectedType = name
-                        }
-                    )
+                        })
                 }
             }
         }

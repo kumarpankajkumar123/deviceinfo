@@ -34,6 +34,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.materialIcon
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -42,7 +43,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -82,6 +85,7 @@ import com.example.learningprojects.ui.theme.ramStorageColor
 import com.example.learningprojects.utils.DeviceHealthManager.format1Digit
 import com.example.learningprojects.utils.DeviceHealthManager.getBatteryRemainingTime
 import com.example.learningprojects.utils.DeviceHealthManager.getPlayStoreApps
+import kotlinx.coroutines.delay
 
 @RequiresApi(Build.VERSION_CODES.R)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -106,6 +110,13 @@ fun HomeScreen(
                 viewModel.loadWifiInfo(context)
             }
         }
+    var startAnimations by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(state) {
+        if (state != null && !startAnimations) {
+            delay(250)
+            startAnimations = true
+        }
+    }
 
     LaunchedEffect(Unit) {
 
@@ -159,14 +170,26 @@ fun HomeScreen(
     }
 
     val graphProgressAnimatable = remember { androidx.compose.animation.core.Animatable(0f) }
-    LaunchedEffect(selectedTab) {
-        graphProgressAnimatable.snapTo(0f) // Bina kisi delay ke animation ko 0 par jhatke se reset karein
+//    LaunchedEffect(selectedTab) {
+//        graphProgressAnimatable.snapTo(0f) // Bina kisi delay ke animation ko 0 par jhatke se reset karein
+//        graphProgressAnimatable.animateTo(
+//            targetValue = 1f,
+//            animationSpec = tween(
+//                durationMillis = 1500,
+//                easing = FastOutSlowInEasing
+//            )
+//        )
+//    }
+
+    LaunchedEffect(selectedTab, startAnimations) {
+
+        if (!startAnimations) return@LaunchedEffect
+
+        graphProgressAnimatable.snapTo(0f)
+
         graphProgressAnimatable.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(
-                durationMillis = 1500,
-                easing = FastOutSlowInEasing
-            )
+            1f,
+            tween(1500)
         )
     }
     val graphProgress = graphProgressAnimatable.value
@@ -180,6 +203,7 @@ fun HomeScreen(
                 AnalyticsPoint("4p", 60f), AnalyticsPoint("6p", 50f),
                 AnalyticsPoint("Now", 45f)
             )
+
             GraphType.RAM -> listOf(
                 AnalyticsPoint("6a", 30f), AnalyticsPoint("8a", 35f),
                 AnalyticsPoint("10a", 55f), AnalyticsPoint("12p", 60f),
@@ -187,6 +211,7 @@ fun HomeScreen(
                 AnalyticsPoint("4p", 65f), AnalyticsPoint("6p", 55f),
                 AnalyticsPoint("Now", 50f)
             )
+
             GraphType.NETWORK -> listOf(
                 // primaryValue = Download (34f), secondaryValue = Upload (33f)
                 AnalyticsPoint("6a", 20f, 15f), AnalyticsPoint("8a", 45f, 35f),
@@ -200,9 +225,9 @@ fun HomeScreen(
 
     val list = listOf<DeviceStatusDummyModel>(
         DeviceStatusDummyModel(
-            batteryTime = getBatteryRemainingTime(state?.battery?:0),
+            batteryTime = getBatteryRemainingTime(state?.battery ?: 0),
             batteryPercentage = "${state?.battery}%",
-            usagePercentage = state?.battery?.toFloat()?:0f,
+            usagePercentage = state?.battery?.toFloat() ?: 0f,
             image = R.drawable.outline_battery_android_0_24,
             temp = "${state?.batteryTemp}°C",
             name = "Battery",
@@ -211,7 +236,7 @@ fun HomeScreen(
         DeviceStatusDummyModel(
             batteryTime = "${state?.totalRamGb?.format1Digit()}GB",
             batteryPercentage = "${state?.ramUsage}%",
-            usagePercentage = state?.ramUsage?.toFloat()?:0f,
+            usagePercentage = state?.ramUsage?.toFloat() ?: 0f,
             image = R.drawable.database_24dp_01147b___fill0_wght400_grad0_opsz24,
             temp = "${state?.usedRamGb?.format1Digit()}GB Used- ${state?.availableRamGb?.format1Digit()}GB Free",
             name = "RAM Usage",
@@ -220,7 +245,7 @@ fun HomeScreen(
         DeviceStatusDummyModel(
             batteryTime = "${state?.totalStorageGb?.format1Digit()}GB",
             batteryPercentage = "${state?.storageUsage}%",
-            usagePercentage = state?.storageUsage?.toFloat()?:0f,
+            usagePercentage = state?.storageUsage?.toFloat() ?: 0f,
             image = R.drawable.database_24dp_01147b___fill0_wght400_grad0_opsz24,
             temp = "${state?.usedStorageGB?.format1Digit()}GB Used - ${state?.availableStorageGb?.format1Digit()}GB Free",
             name = "Storage",
@@ -330,7 +355,12 @@ fun HomeScreen(
             )
 
             {
-                CircularHealthMeter(healthValue = state?.overallHealth?:54, size = 140.dp, strokeWidth = 14.dp)
+                CircularHealthMeter(
+                    healthValue = state?.overallHealth ?: 54,
+                    startAnimation = startAnimations,
+                    size = 140.dp,
+                    strokeWidth = 14.dp
+                )
                 Column(
                     modifier = Modifier
                         .wrapContentSize()
@@ -489,7 +519,10 @@ fun HomeScreen(
                     Box(
                         modifier = Modifier.weight(1f)
                     ) {
-                        DeviceStatusLayout(item)
+                        DeviceStatusLayout(
+                            item,
+                            startAnimation = startAnimations
+                        )
                     }
                 }
 

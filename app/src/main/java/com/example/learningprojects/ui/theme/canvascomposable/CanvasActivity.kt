@@ -2024,10 +2024,11 @@ fun HealthMeterPreview() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        CircularHealthMeter()
+//        CircularHealthMeter()
         Spacer(modifier = Modifier.height(24.dp))
         // Demonstrating a dynamic value
-        CircularHealthMeter(healthValue = 45, size = 180.dp, strokeWidth = 16.dp)
+        CircularHealthMeter(healthValue = 45, size = 180.dp, strokeWidth = 16.dp,
+            startAnimation = false)
     }
 }
 

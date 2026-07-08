@@ -46,10 +46,19 @@ import com.example.learningprojects.ui.theme.commonusablecomponent.CommonText
 import com.example.learningprojects.ui.theme.lightGrayHome
 
 @Composable
-fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
+fun DeviceStatusLayout(
+    item: DeviceStatusDummyModel,
+    startAnimation: Boolean
+) {
     val animatedProgress by animateFloatAsState(
-        targetValue = item.usagePercentage / 100f,
-        animationSpec = tween(1000),
+        targetValue =
+            if (startAnimation)
+                item.usagePercentage / 100f
+            else
+                0f,
+        animationSpec = tween(
+            durationMillis = 1200
+        ),
         label = ""
     )
     val colors = getStatusColors(item.name)
@@ -85,7 +94,7 @@ fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background( shape = CircleShape, color = item.color.copy(alpha = 0.21f)),
+                    .background(shape = CircleShape, color = item.color.copy(alpha = 0.21f)),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -96,36 +105,43 @@ fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
                         .size(24.dp)
                 )
             }
-            CommonText(
-                text = item.batteryTime,
-                fontFamily = FontFamily(Font(resId = R.font.regular)),
-                fontSize = 13.sp,
-                fontWeight = FontWeight.W400,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.wrapContentSize()
-            )
+
+            if (!item.batteryTime.isEmpty()) {
+                CommonText(
+                    text = item.batteryTime,
+                    fontFamily = FontFamily(Font(resId = R.font.regular)),
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.W400,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.wrapContentSize()
+                )
+            }
         }
 
-        Spacer(Modifier.height(10.dp))
-        CommonText(
-            text = item.batteryPercentage,
-            fontSize = 20.sp,
-            fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
-            fontWeight = FontWeight.W600,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.wrapContentSize(),
-        )
-        Spacer(Modifier.height(5.dp))
+        if (!item.batteryPercentage.isEmpty()) {
+            Spacer(Modifier.height(10.dp))
+            CommonText(
+                text = item.batteryPercentage,
+                fontSize = 20.sp,
+                fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
+                fontWeight = FontWeight.W600,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.wrapContentSize(),
+            )
 
-        CommonText(
-            text = item.name,
-            fontSize = 13.sp,
-            fontFamily = FontFamily(Font(resId = R.font.regular)),
-            fontWeight = FontWeight.W400,
-            color = lightGrayHome,
-            modifier = Modifier.wrapContentSize(),
-            isSingleLine = true
-        )
+        }
+        if (!item.name.isEmpty()) {
+            Spacer(Modifier.height(5.dp))
+            CommonText(
+                text = item.name,
+                fontSize = 13.sp,
+                fontFamily = FontFamily(Font(resId = R.font.regular)),
+                fontWeight = FontWeight.W400,
+                color = lightGrayHome,
+                modifier = Modifier.wrapContentSize(),
+                isSingleLine = true
+            )
+        }
 
         if (animatedProgress != 0f) {
             Spacer(Modifier.height(15.dp))
@@ -136,11 +152,10 @@ fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
                     .fillMaxWidth()
                     .padding(0.dp)
             )
-        }
-        else{
-            Spacer(Modifier.height(5.dp))
+        } else {
+            Spacer(Modifier.height(8.dp))
             CommonText(
-                text = item.speed?:"",
+                text = item.speed ?: "",
                 fontSize = 13.sp,
                 fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
                 fontWeight = FontWeight.W600,
@@ -149,18 +164,21 @@ fun DeviceStatusLayout(item: DeviceStatusDummyModel) {
                 isSingleLine = true
             )
         }
-        CommonText(
-            text = item.temp,
-            fontSize = 13.sp,
-            fontFamily = FontFamily(Font(resId = R.font.regular)),
-            fontWeight = FontWeight.W400,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier
-                .padding(top = 5.dp)
-                .wrapContentSize(),
-            isSingleLine = true
-        )
 
+        if (!item.temp.isEmpty()) {
+            Spacer(Modifier.height(8.dp))
+            CommonText(
+                text = item.temp,
+                fontSize = 13.sp,
+                fontFamily = FontFamily(Font(resId = R.font.regular)),
+                fontWeight = FontWeight.W400,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .padding(top = 0.dp)
+                    .wrapContentSize(),
+                isSingleLine = true
+            )
+        }
     }
 }
 

@@ -57,6 +57,7 @@ data class AppsResult(
     val totalApps: Int,
     val userApps: Int,
     val systemApps: Int,
+    val appsStorage: Long,
     val userAppList: List<AppInfo>,
     val systemAppList: List<AppInfo>
 )

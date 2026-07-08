@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.StatFs
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.learningprojects.ui.theme.homescreen.AppInfo
 import com.example.learningprojects.ui.theme.homescreen.AppsResult
 import com.example.learningprojects.ui.theme.homescreen.DeviceHealth
@@ -12,9 +13,12 @@ import com.example.learningprojects.ui.theme.homescreen.WifiUiState
 import com.example.learningprojects.utils.DeviceHealthManager
 import com.example.learningprojects.utils.DeviceHealthManager.bytesToGB
 import com.example.learningprojects.utils.WifiInfoHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeViewModel : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
@@ -26,50 +30,55 @@ class HomeViewModel : ViewModel() {
 
     fun loadHealth(context: Context) {
 
-        val battery =
-            DeviceHealthManager.getBatteryPercentage(context)
+        viewModelScope.launch {
 
-        val ram = DeviceHealthManager.getRamUsage(context)
-        val usedMemory = ram.totalMem - ram.availMem
-        val usage = ((usedMemory.toDouble() / ram.totalMem) * 100).toInt()
+            val result = withContext(Dispatchers.Default) {
 
-        val storage = DeviceHealthManager.getStorageUsage()
-        val total = storage.totalBytes
-        val used = total - storage.availableBytes
-        val usageStorage = ((used.toDouble() / total) * 100).toInt()
+                val battery = DeviceHealthManager.getBatteryPercentage(context)
 
-        val temp =
-            DeviceHealthManager.getBatteryTemperature(context)
+                val ram = DeviceHealthManager.getRamUsage(context)
+                val usedMemory = ram.totalMem - ram.availMem
+                val usage = ((usedMemory.toDouble() / ram.totalMem) * 100).toInt()
 
-        val ramPercent =
-            ((ram.availMem.toDouble() / ram.totalMem) * 100).toInt()
+                val storage = DeviceHealthManager.getStorageUsage()
+                val total = storage.totalBytes
+                val used = total - storage.availableBytes
+                val usageStorage = ((used.toDouble() / total) * 100).toInt()
 
-        val storagePercent =
-            ((storage.availableBytes.toDouble() / storage.totalBytes) * 100).toInt()
+                val temp = DeviceHealthManager.getBatteryTemperature(context)
 
-        val cpuScore = calculateTemperatureScore(temp)
+                val ramPercent =
+                    ((ram.availMem.toDouble() / ram.totalMem) * 100).toInt()
 
-        val overallHealth = (battery + ramPercent + storagePercent + cpuScore) / 4
+                val storagePercent =
+                    ((storage.availableBytes.toDouble() / storage.totalBytes) * 100).toInt()
 
-        _health.value = DeviceHealth(
-            battery = battery,
-            ramUsage = usage,
-            storageUsage = usageStorage,
-            batteryTemp = temp,
-            overallHealth = overallHealth,
-            availableRam = ramPercent,
-            availableStorage = storagePercent,
+                val cpuScore = calculateTemperatureScore(temp)
 
-            totalRamGb = bytesToGB(ram.totalMem),
-            availableRamGb = bytesToGB(ram.availMem),
-            usedRamGb = bytesToGB(usedMemory),
+                val overallHealth =
+                    (battery + ramPercent + storagePercent + cpuScore) / 4
 
-            // Storage
-            totalStorageGb = bytesToGB(storage.totalBytes),
-            availableStorageGb = bytesToGB(storage.availableBytes),
-            usedStorageGB = bytesToGB(used),
+                DeviceHealth(
+                    battery = battery,
+                    ramUsage = usage,
+                    storageUsage = usageStorage,
+                    batteryTemp = temp,
+                    overallHealth = overallHealth,
+                    availableRam = ramPercent,
+                    availableStorage = storagePercent,
 
-            )
+                    totalRamGb = bytesToGB(ram.totalMem),
+                    availableRamGb = bytesToGB(ram.availMem),
+                    usedRamGb = bytesToGB(usedMemory),
+
+                    totalStorageGb = bytesToGB(storage.totalBytes),
+                    availableStorageGb = bytesToGB(storage.availableBytes),
+                    usedStorageGB = bytesToGB(used)
+                )
+            }
+
+            _health.value = result
+        }
     }
 
     private val _wifiState = MutableStateFlow(WifiUiState())
@@ -104,8 +113,15 @@ class HomeViewModel : ViewModel() {
     val appsInfo = _appsInfo.asStateFlow()
 
     fun loadInstalledApps(context: Context) {
-        _appsInfo.value =
-            DeviceHealthManager.getApps(context)
+
+        viewModelScope.launch {
+
+            val result = withContext(Dispatchers.IO) {
+                DeviceHealthManager.getApps(context)
+            }
+
+            _appsInfo.value = result
+        }
     }
 
     private val _playStoreAppsCount = MutableStateFlow(0)

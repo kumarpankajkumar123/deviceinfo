@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -42,7 +44,10 @@ import com.example.learningprojects.ui.theme.AccentGreen
 import com.example.learningprojects.ui.theme.PureWhite
 import com.example.learningprojects.ui.theme.commonusablecomponent.CommonText
 import com.example.learningprojects.ui.theme.homescreen.CustomLinearProgressBar
+import com.example.learningprojects.ui.theme.homescreen.DeviceStatusDummyModel
+import com.example.learningprojects.ui.theme.homescreen.getStatusColors
 import com.example.learningprojects.ui.theme.lightGrayHome
+import com.example.learningprojects.ui.theme.ramStorageColor
 
 @Composable
 fun AppShowLayout(name: String) {
@@ -102,7 +107,7 @@ fun AppShowLayout(name: String) {
 
                 Box(
                     modifier = Modifier
-                        .size(45.dp)
+                        .size(60.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(
                             shape = RoundedCornerShape(10.dp),
@@ -114,7 +119,7 @@ fun AppShowLayout(name: String) {
                     Image(
                         painter = painterResource(id = R.drawable.database_24dp_01147b___fill0_wght400_grad0_opsz24),
                         contentDescription = "null",
-                        modifier = Modifier.size(30.dp),
+                        modifier = Modifier.size(40.dp),
                         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
                     )
                 }
@@ -130,7 +135,9 @@ fun AppShowLayout(name: String) {
                         fontFamily = FontFamily(Font(resId = R.font.google_sans_bold)),
                         fontWeight = FontWeight.W800,
                         color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.wrapContentSize(),
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .padding(top = 0.dp),
                     )
                     CommonText(
                         text = name,
@@ -138,11 +145,16 @@ fun AppShowLayout(name: String) {
                         fontFamily = FontFamily(Font(resId = R.font.regular17pt)),
                         fontWeight = FontWeight.W400,
                         color = lightGrayHome,
-                        modifier = Modifier.wrapContentSize(),
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .padding(top = 3.dp),
                     )
 
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(5.dp)
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(top = 5.dp)
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.sharp_access_time_24),
@@ -158,7 +170,8 @@ fun AppShowLayout(name: String) {
                             fontFamily = FontFamily(Font(resId = R.font.regular)),
                             fontWeight = FontWeight.W400,
                             color = lightGrayHome,
-                            modifier = Modifier.wrapContentSize(),
+                            modifier = Modifier
+                                .wrapContentSize(),
                         )
                     }
 
@@ -228,7 +241,7 @@ fun AppShowLayout(name: String) {
                     fontSize = 13.sp,
                     fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
                     fontWeight = FontWeight.W600,
-                    color = lightGrayHome,
+                    color = ramStorageColor,
                     modifier = Modifier
                         .wrapContentSize()
                 )
@@ -311,6 +324,91 @@ fun AppProgressShow(item: AppUsageItem) {
 
     }
 }
+
+@Composable
+fun AppScreenGriLayout(item: AppLayoutGrid) {
+    Column(
+        modifier = Modifier
+            .wrapContentWidth()
+            .wrapContentHeight()
+            .shadow(
+                elevation = 8.dp,
+                shape = RoundedCornerShape(10.dp),
+                ambientColor = Color.Black.copy(alpha = 0.15f),
+                spotColor = Color.Black.copy(alpha = 0.15f)
+            )
+            .border(
+                width = 1.dp,
+                color = Color.LightGray.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(10.dp)
+            )
+            .background(
+                MaterialTheme.colorScheme.onSurface,
+                shape = RoundedCornerShape(10.dp)
+            )
+            .padding(horizontal = 16.dp, vertical = 20.dp)
+    ) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(shape = CircleShape, color = item.color.copy(alpha = 0.21f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = item.image),
+                    contentDescription = "battery",
+                    colorFilter = ColorFilter.tint(item.color),
+                    modifier = Modifier
+                        .size(24.dp)
+                )
+            }
+        }
+
+        if (!item.actualValue.isEmpty()) {
+            Spacer(Modifier.height(10.dp))
+            CommonText(
+                text = item.actualValue,
+                fontSize = 20.sp,
+                fontFamily = FontFamily(Font(resId = R.font.google_sans_bold)),
+                fontWeight = FontWeight.W800,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.wrapContentSize(),
+            )
+
+        }
+        if (!item.title.isEmpty()) {
+            Spacer(Modifier.height(5.dp))
+            CommonText(
+                text = item.title,
+                fontSize = 13.sp,
+                fontFamily = FontFamily(Font(resId = R.font.semi_bold)),
+                fontWeight = FontWeight.W400,
+                color = lightGrayHome,
+                modifier = Modifier.wrapContentSize(),
+                isSingleLine = true
+            )
+        }
+        Spacer(Modifier.height(5.dp))
+        CommonText(
+            text = item.description ?: "",
+            fontSize = 13.sp,
+            fontFamily = FontFamily(Font(resId = R.font.regular)),
+            fontWeight = FontWeight.W400,
+            color = lightGrayHome,
+            modifier = Modifier.wrapContentSize(),
+            isSingleLine = true
+        )
+    }
+}
+
 
 @Preview
 @Composable

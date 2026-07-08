@@ -153,6 +153,7 @@ fun CircularHealthMeter(
     healthValue: Int = 82, // Standard value from image
     modifier: Modifier = Modifier,
     size: Dp = 220.dp,
+    startAnimation: Boolean,
     strokeWidth: Dp = 15.dp,
     filledColor: Color = MaterialTheme.colorScheme.secondary, // Vibrant Green
     unfilledColor: Color = unFilteredColor, // Dark gray, partially transparent
@@ -160,19 +161,28 @@ fun CircularHealthMeter(
     textColorMain: Color = MaterialTheme.colorScheme.secondary, // Same vibrant Green
     textColorSub: Color = lightGrayHome // Light Gray
 ) {
-    var startAnimation by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        startAnimation = true
-    }
     val animatedProgress by animateFloatAsState(
-        targetValue = if (startAnimation) healthValue / 100f else 0f,
-        animationSpec = tween(
-            durationMillis = 1500,
-            easing = LinearOutSlowInEasing
-        ),
+        targetValue =
+            if (startAnimation)
+                healthValue / 100f
+            else
+                0f,
+        animationSpec = tween(1500,
+            easing = LinearOutSlowInEasing),
         label = ""
     )
+
+//    LaunchedEffect(Unit) {
+//        startAnimation = true
+//    }
+//    val animatedProgress by animateFloatAsState(
+//        targetValue = if (startAnimation) healthValue / 100f else 0f,
+//        animationSpec = tween(
+//            durationMillis = 1500,
+//            easing = LinearOutSlowInEasing
+//        ),
+//        label = ""
+//    )
     val animatedValue by animateIntAsState(
         targetValue = if (startAnimation) healthValue else 0,
         animationSpec = tween(

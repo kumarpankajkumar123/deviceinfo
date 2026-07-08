@@ -15,4 +15,8 @@ object Utils {
         val localDate = LocalDate.parse(date, inputFormatter)
         return localDate.format(outputFormatter)
     }
+
+    fun Long.toGB(): String {
+        return String.format("%.2f GB", this / (1024.0 * 1024 * 1024))
+    }
 }

@@ -9,6 +9,8 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -24,19 +26,31 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -53,6 +67,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.TextUnit
@@ -314,4 +329,100 @@ fun BlinkingDot(
             .alpha(alpha)
             .background(color, CircleShape)
     )
+}
+@Composable
+fun LiquidGlassBottomBar() {
+
+    var selected by remember { mutableIntStateOf(0) }
+
+    val items = listOf(
+        Icons.Default.Home,
+        Icons.Default.Search,
+        Icons.Default.Notifications,
+        Icons.Default.Person
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.linearGradient(
+                    listOf(
+                        Color(0xFF5E72EB),
+                        Color(0xFF8E54E9),
+                        Color(0xFF1A1A1A)
+                    )
+                )
+            )
+    ) {
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 24.dp)
+                .shadow(
+                    elevation = 30.dp,
+                    shape = RoundedCornerShape(100.dp),
+                    ambientColor = Color.White.copy(.15f),
+                    spotColor = Color.Black.copy(.35f)
+                )
+                .clip(RoundedCornerShape(100.dp))
+                .background(Color.White.copy(.12f))
+                .border(
+                    1.dp,
+                    Color.White.copy(.25f),
+                    RoundedCornerShape(100.dp)
+                )
+                .padding(horizontal = 10.dp, vertical = 8.dp)
+        ) {
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+                items.forEachIndexed { index, icon ->
+
+                    val selectedItem = selected == index
+
+                    Box(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(
+                                if (selectedItem)
+                                    Color.White.copy(.18f)
+                                else
+                                    Color.Transparent
+                            )
+                            .clickable {
+                                selected = index
+                            }
+                            .padding(
+                                horizontal = 18.dp,
+                                vertical = 12.dp
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint =
+                                if (selectedItem)
+                                    Color.White
+                                else
+                                    Color.White.copy(.65f)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewLiquidGlassBottomBar() {
+    MaterialTheme {
+        LiquidGlassBottomBar()
+    }
 }

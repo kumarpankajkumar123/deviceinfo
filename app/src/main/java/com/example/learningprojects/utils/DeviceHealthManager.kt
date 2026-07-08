@@ -18,6 +18,8 @@ import com.example.learningprojects.ui.theme.devicescreen.DeviceInfoModel
 import com.example.learningprojects.ui.theme.homescreen.AppInfo
 import com.example.learningprojects.ui.theme.homescreen.AppsResult
 import com.example.learningprojects.ui.theme.homescreen.InstalledAppsInfo
+import java.io.File
+import kotlin.math.round
 
 object DeviceHealthManager {
 
@@ -73,7 +75,8 @@ object DeviceHealthManager {
     }
 
     fun bytesToGB(bytes: Long): Float {
-        return bytes / (1024f * 1024f * 1024f)
+        val gb =  bytes / (1024f * 1024f * 1024f)
+        return round(gb * 100) / 100
     }
 
     fun Float.format1Digit(): String {
@@ -223,9 +226,10 @@ object DeviceHealthManager {
 
         val userApps = mutableListOf<AppInfo>()
         val systemApps = mutableListOf<AppInfo>()
-
+        var totalAppsStorage: Long = 0L
         installedApps.forEach { app ->
-
+            val apkSize = File(app.sourceDir).length()
+            totalAppsStorage += apkSize
             val appInfo = AppInfo(
                 appName = pm.getApplicationLabel(app).toString(),
                 packageName = app.packageName,
@@ -243,6 +247,7 @@ object DeviceHealthManager {
             totalApps = installedApps.size,
             userApps = userApps.size,
             systemApps = systemApps.size,
+            appsStorage = totalAppsStorage,
             userAppList = userApps.sortedBy { it.appName },
             systemAppList = systemApps.sortedBy { it.appName }
         )
